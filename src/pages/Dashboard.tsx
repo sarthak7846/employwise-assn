@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { Card } from "../components/Card";
 import { BASE_URL } from "../config";
 import axios from "axios";
@@ -6,16 +6,19 @@ import { motion } from "motion/react";
 import { RightArrow } from "../icons/RightArrow";
 import { LeftArrow } from "../icons/LeftArrow";
 import { Modal } from "../components/Modal";
+import { User } from "../types/user";
 
 export const Dashboard = () => {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState();
   const [modalOpen, setModalOpen] = useState(false);
-  const [editData, setEditData] = useState({
-    firstName: "",
-    lastName: "",
+  const [editForm, setEditForm] = useState({
+    id: 0,
+    first_name: "",
+    last_name: "",
     email: "",
+    avatar: "",
   });
 
   useEffect(() => {
@@ -34,14 +37,34 @@ export const Dashboard = () => {
     fetchUsers();
   }, [page]);
 
-  const modalOpenHandler = (editDataInfo) => {
-    console.log(editData);
-    console.log(editDataInfo);
-
-    setEditData(() => editDataInfo);
-    console.log(editData);
-
+  const modalOpenHandler = () => {
     setModalOpen(true);
+  };
+
+  const captureEdit = (clickedUser: User) => {
+    setModalOpen(true);
+    const filtered = users.filter((user) => user.id === clickedUser.id);
+    setEditForm(filtered[0]);
+  };
+
+  const editChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    setEditForm({
+      ...editForm,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const userUpdateHandler = (updatedUser: User) => {
+    setModalOpen(!modalOpen);
+    const updatedUsers = users.map((user) => {
+      if (user.id === updatedUser.id) {
+        return updatedUser;
+      } else {
+        return user;
+      }
+    });
+
+    setUsers(updatedUsers);
   };
 
   return (
@@ -65,12 +88,9 @@ export const Dashboard = () => {
             <Card
               key={inx}
               inx={inx}
-              email={user.email}
-              firstName={user.first_name}
-              lastName={user.last_name}
-              imgURL={user.avatar}
+              user={user}
               len={users.length}
-              onOpenModal={modalOpenHandler}
+              captureEdit={captureEdit}
             />
           ))}
           <div className="flex justify-end items-center mt-2">
@@ -98,7 +118,13 @@ export const Dashboard = () => {
           </div>
         </div>
       </div>
-      <Modal onClose={modalOpen} open={modalOpen} editData={editData} />
+      <Modal
+        onClose={() => setModalOpen(!modalOpen)}
+        open={modalOpen}
+        editForm={editForm}
+        editChangeHandler={editChangeHandler}
+        onUserUpdate={userUpdateHandler}
+      />
     </>
   );
 };

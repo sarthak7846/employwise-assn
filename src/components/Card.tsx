@@ -1,23 +1,21 @@
 import { motion } from "motion/react";
 import { Button } from "./Button";
+import { User } from "../types/user";
 
-export const Card = ({
-  email,
-  firstName,
-  lastName,
-  imgURL,
-  inx,
-  len,
-  onOpenModal,
-}: {
-  email: string;
-  firstName: string;
-  lastName: string;
-  imgURL: string;
+interface CardProps {
+  user: User;
   inx: number;
   len: number;
-  onOpenModal: ({ firstName, lastName, email }) => void;
-}) => {
+  captureEdit: (user: User) => void;
+}
+
+export const Card = ({
+  user: { email, first_name, last_name, avatar },
+  user,
+  inx,
+  len,
+  captureEdit,
+}: CardProps) => {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -28,15 +26,17 @@ export const Card = ({
       }`}
     >
       <h1 className="text-xl">{email}</h1>
-      <h1 className="text-xl">{firstName}</h1>
-      <h1 className="text-xl">{lastName}</h1>
+      <h1 className="text-xl">{first_name}</h1>
+      <h1 className="text-xl">{last_name}</h1>
 
-      <img src={imgURL} width={40} height={40} className="rounded-full" />
+      <img src={avatar} width={40} height={40} className="rounded-full" />
 
       <div>
         <Button
           text="Edit"
-          onClick={() => onOpenModal({ firstName, lastName, email })}
+          onClick={() => {
+            captureEdit(user);
+          }}
         />
         <Button text="Delete" onClick={() => {}} />
       </div>

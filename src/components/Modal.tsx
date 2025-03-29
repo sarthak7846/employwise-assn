@@ -1,65 +1,86 @@
-import { useRef, useState } from "react";
 import CrossIcon from "../icons/CrossIcon";
 import { Input } from "./Input";
 import { Button } from "./Button";
+import { User } from "../types/user";
+import { FormEvent } from "react";
+import axios from "axios";
+import { BASE_URL } from "../config";
 
-export const Modal = ({ open, onClose, editData }) => {
-  const [firstName, setFirstName] = useState(editData.firstName);
-  const [lastName, setLastName] = useState(editData.lastName);
-  const [email, setEmail] = useState(editData.email);
+interface ModalProps {
+  open: boolean;
+  onClose: () => void;
+  editForm: User;
+  editChangeHandler: (e: FormEvent) => void;
+  onUserUpdate: (user: User) => void;
+}
 
-  const firstNameChangeHandler = (e) => {
-    setFirstName(e.target.value);
-  };
+export const Modal = ({
+  open,
+  onClose,
+  editForm,
+  editForm: { first_name, last_name, email, id, avatar },
+  editChangeHandler,
+  onUserUpdate,
+}: ModalProps) => {
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    console.log(e);
+    console.log(first_name, last_name, email, id);
 
-  const lastNameChangeHandler = (e) => {
-    setLastName(e.target.value);
-  };
+    try {
+      const res = await axios.put(`${BASE_URL}/api/users/${id}`, {
+        ...editForm,
+        avatar,
+      });
 
-  const emailChangeHandler = (e) => {
-    setEmail(e.target.value);
+      onUserUpdate(res.data.editForm);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
     <>
       {open && (
-        <div>
+        <form onSubmit={submitHandler}>
           <div className="h-screen w-screen bg-black opacity-50 text-white fixed top-0 left-0 "></div>
           <div className="bg-white p-6 rounded-sm fixed inset-0 max-w-fit max-h-fit m-auto flex justify-center items-center">
             <div>
-              <div
-                className="flex justify-between items-center cursor-pointer mb-3"
-                onClick={() => {}}
-              >
+              <div className="flex justify-between items-center cursor-pointer mb-3">
                 <h1 className="text-xl">Edit</h1>
-                <CrossIcon />
+                <span onClick={onClose}>
+                  <CrossIcon />
+                </span>
               </div>
               <div className="flex flex-col">
                 <Input
                   placeholder="First Name"
                   type="text"
-                  value={firstName}
-                  onChange={firstNameChangeHandler}
+                  value={first_name}
+                  name="first_name"
+                  onChange={editChangeHandler}
                 />
                 <Input
                   placeholder="Last Name"
                   type="text"
-                  value={lastName}
-                  onChange={lastNameChangeHandler}
+                  value={last_name}
+                  name="last_name"
+                  onChange={editChangeHandler}
                 />
                 <Input
                   placeholder="Email"
                   type="text"
                   value={email}
-                  onChange={emailChangeHandler}
+                  name="email"
+                  onChange={editChangeHandler}
                 />
               </div>
               <div className="flex justify-center">
-                <Button text="Save" onClick={() => {}} />
+                <Button text="Save" onClick={submitHandler} type="submit" />
               </div>
             </div>
           </div>
-        </div>
+        </form>
       )}
     </>
   );
