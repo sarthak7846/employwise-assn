@@ -24,13 +24,10 @@ export const Modal = ({
 }: ModalProps) => {
   const submitHandler = async (e) => {
     e.preventDefault();
-    console.log(e);
-    console.log(first_name, last_name, email, id);
 
     try {
       const res = await axios.put(`${BASE_URL}/api/users/${id}`, {
-        ...editForm,
-        avatar,
+        editForm,
       });
 
       onUserUpdate(res.data.editForm);
