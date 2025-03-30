@@ -1,11 +1,11 @@
-import { FormEvent } from "react";
+import { ChangeEvent } from "react";
 
 interface InputProps {
   placeholder: string;
   type: string;
   name: string;
   value: string;
-  onChange: (e: FormEvent) => void;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const Input = ({

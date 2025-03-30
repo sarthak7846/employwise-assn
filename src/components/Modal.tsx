@@ -2,7 +2,7 @@ import CrossIcon from "../icons/CrossIcon";
 import { Input } from "./Input";
 import { Button } from "./Button";
 import { User } from "../types/user";
-import { FormEvent } from "react";
+import { ChangeEvent, FormEvent } from "react";
 import axios from "axios";
 import { BASE_URL } from "../config";
 
@@ -10,7 +10,7 @@ interface ModalProps {
   open: boolean;
   onClose: () => void;
   editForm: User;
-  editChangeHandler: (e: FormEvent) => void;
+  editChangeHandler: (e: ChangeEvent<HTMLInputElement>) => void;
   onUserUpdate: (user: User) => void;
 }
 
@@ -18,11 +18,11 @@ export const Modal = ({
   open,
   onClose,
   editForm,
-  editForm: { first_name, last_name, email, id, avatar },
+  editForm: { first_name, last_name, email, id },
   editChangeHandler,
   onUserUpdate,
 }: ModalProps) => {
-  const submitHandler = async (e) => {
+  const submitHandler = async (e: FormEvent) => {
     e.preventDefault();
 
     try {
@@ -79,6 +79,7 @@ export const Modal = ({
           </div>
         </form>
       )}
+      {}
     </>
   );
 };

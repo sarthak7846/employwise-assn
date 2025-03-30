@@ -7,19 +7,25 @@ import { RightArrow } from "../icons/RightArrow";
 import { LeftArrow } from "../icons/LeftArrow";
 import { Modal } from "../components/Modal";
 import { User } from "../types/user";
+import { DeleteModal } from "../components/DeleteModal";
 
 export const Dashboard = () => {
   const [users, setUsers] = useState<User[]>([]);
+
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState();
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editForm, setEditForm] = useState({
+  const [totalPages, setTotalPages] = useState(0);
+
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
+  const [editForm, setEditForm] = useState<User>({
     id: 0,
     first_name: "",
     last_name: "",
     email: "",
     avatar: "",
   });
+  const [deletedUserId, setDeletedUserId] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -37,14 +43,16 @@ export const Dashboard = () => {
     fetchUsers();
   }, [page]);
 
-  const modalOpenHandler = () => {
-    setModalOpen(true);
-  };
-
   const captureEdit = (clickedUser: User) => {
-    setModalOpen(true);
+    setEditModalOpen(true);
     const filtered = users.filter((user) => user.id === clickedUser.id);
     setEditForm(filtered[0]);
+  };
+
+  const captureDelete = (id: number) => {
+    setDeleteModalOpen(true);
+    const filteredUser = users.filter((user) => user.id === id);
+    setDeletedUserId(filteredUser[0].id);
   };
 
   const editChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -55,7 +63,7 @@ export const Dashboard = () => {
   };
 
   const userUpdateHandler = (updatedUser: User) => {
-    setModalOpen(!modalOpen);
+    setEditModalOpen(!editModalOpen);
     const updatedUsers = users.map((user) => {
       if (user.id === updatedUser.id) {
         return updatedUser;
@@ -64,6 +72,14 @@ export const Dashboard = () => {
       }
     });
 
+    setUsers(updatedUsers);
+  };
+
+  const userAfterDeletionHandler = (id: number | null) => {
+    setDeleteModalOpen(false);
+    const updatedUsers = users.filter((user) => {
+      return user.id !== id;
+    });
     setUsers(updatedUsers);
   };
 
@@ -91,6 +107,7 @@ export const Dashboard = () => {
               user={user}
               len={users.length}
               captureEdit={captureEdit}
+              captureDelete={captureDelete}
             />
           ))}
           <div className="flex justify-end items-center mt-2">
@@ -119,11 +136,17 @@ export const Dashboard = () => {
         </div>
       </div>
       <Modal
-        onClose={() => setModalOpen(!modalOpen)}
-        open={modalOpen}
+        onClose={() => setEditModalOpen(false)}
+        open={editModalOpen}
         editForm={editForm}
         editChangeHandler={editChangeHandler}
         onUserUpdate={userUpdateHandler}
+      />
+      <DeleteModal
+        open={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onUserDelete={userAfterDeletionHandler}
+        userId={deletedUserId}
       />
     </>
   );

@@ -7,6 +7,7 @@ interface CardProps {
   inx: number;
   len: number;
   captureEdit: (user: User) => void;
+  captureDelete: (id: number) => void;
 }
 
 export const Card = ({
@@ -15,6 +16,7 @@ export const Card = ({
   inx,
   len,
   captureEdit,
+  captureDelete,
 }: CardProps) => {
   return (
     <motion.div
@@ -38,7 +40,12 @@ export const Card = ({
             captureEdit(user);
           }}
         />
-        <Button text="Delete" onClick={() => {}} />
+        <Button
+          text="Delete"
+          onClick={() => {
+            captureDelete(user.id);
+          }}
+        />
       </div>
     </motion.div>
   );

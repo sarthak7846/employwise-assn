@@ -7,7 +7,7 @@ export const Button = ({
 }: {
   text: string;
   onClick: (e: MouseEvent<HTMLButtonElement>) => void;
-  type: "submit" | "reset" | "button";
+  type?: "submit" | "reset" | "button";
 }) => {
   return (
     <button
