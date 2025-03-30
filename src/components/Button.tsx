@@ -9,12 +9,12 @@ export const Button = ({
   text: string;
   onClick: (e: MouseEvent<HTMLButtonElement>) => void;
   type?: "submit" | "reset" | "button";
-  variant?: "delete";
+  variant?: "warn" | "warn";
 }) => {
   return (
     <button
       className={`  px-6 py-2 mx-2 rounded-sm cursor-pointer text-white ${
-        variant === "delete"
+        variant === "warn"
           ? "bg-red-600 hover:bg-red-700"
           : "bg-blue-500 hover:bg-blue-700"
       }`}

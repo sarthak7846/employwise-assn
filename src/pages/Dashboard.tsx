@@ -8,8 +8,11 @@ import { LeftArrow } from "../icons/LeftArrow";
 import { Modal } from "../components/Modal";
 import { User } from "../types/user";
 import { DeleteModal } from "../components/DeleteModal";
+import { Button } from "../components/Button";
+import { useNavigate } from "react-router";
 
 export const Dashboard = () => {
+  const navigate = useNavigate();
   const [users, setUsers] = useState<User[]>([]);
 
   const [page, setPage] = useState(1);
@@ -83,11 +86,19 @@ export const Dashboard = () => {
     setUsers(updatedUsers);
   };
 
+  const logoutHandler = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
   return (
     <>
       <div className="bg-slate-950 w-screen h-screen text-gray-200">
         <div className="flex flex-col mx-10">
-          <h1 className="text-4xl  font-semibold py-6">All Users</h1>
+          <div className="flex justify-between items-center h-10 my-6">
+            <h1 className="text-4xl  font-semibold">All Users</h1>
+            <Button text="Log out" onClick={logoutHandler} variant="warn" />
+          </div>
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
