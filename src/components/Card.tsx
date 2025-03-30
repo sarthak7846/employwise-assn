@@ -42,6 +42,7 @@ export const Card = ({
         />
         <Button
           text="Delete"
+          variant="delete"
           onClick={() => {
             captureDelete(user.id);
           }}

@@ -2,6 +2,7 @@ import { Button } from "./Button";
 import CrossIcon from "../icons/CrossIcon";
 import axios from "axios";
 import { BASE_URL } from "../config";
+import { motion } from "motion/react";
 
 interface DeleteModalProps {
   open: boolean;
@@ -28,7 +29,11 @@ export const DeleteModal = ({
   return (
     <>
       {open && (
-        <div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.08 }}
+        >
           <div className="h-screen w-screen bg-black opacity-50 text-white fixed top-0 left-0 " />
           <div className="bg-white p-6 rounded-sm fixed inset-0 max-w-fit max-h-fit m-auto flex justify-center items-center w-72">
             <div>
@@ -45,7 +50,7 @@ export const DeleteModal = ({
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       )}
     </>
   );

@@ -4,6 +4,7 @@ import { Button } from "./Button";
 import { User } from "../types/user";
 import { ChangeEvent, FormEvent } from "react";
 import axios from "axios";
+import { motion } from "motion/react";
 import { BASE_URL } from "../config";
 
 interface ModalProps {
@@ -39,7 +40,12 @@ export const Modal = ({
   return (
     <>
       {open && (
-        <form onSubmit={submitHandler}>
+        <motion.form
+          onSubmit={submitHandler}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.08 }}
+        >
           <div className="h-screen w-screen bg-black opacity-50 text-white fixed top-0 left-0 "></div>
           <div className="bg-white p-6 rounded-sm fixed inset-0 max-w-fit max-h-fit m-auto flex justify-center items-center">
             <div>
@@ -77,7 +83,7 @@ export const Modal = ({
               </div>
             </div>
           </div>
-        </form>
+        </motion.form>
       )}
       {}
     </>
